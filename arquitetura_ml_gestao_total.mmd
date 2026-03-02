@@ -1,0 +1,37 @@
+graph TD
+    subgraph "ML Gestão Total (Unified Shell)"
+        Auth[Shared Auth & Users]
+        DB[(Unified Database)]
+        
+        subgraph "Módulo RH Prime"
+            RH_Logic[RH Business Logic]
+            RH_UI[RH Interface]
+            RH_Schema[RH Tables]
+        end
+        
+        subgraph "Módulo Gestão Operacional"
+            OP_Logic[Operacional Logic]
+            OP_UI[Operacional Interface]
+            OP_Schema[Operacional Tables]
+        end
+        
+        subgraph "Interconexão (Shared Service)"
+            CPF_Key{CPF Cross-Check}
+            Risk_Engine[Unified Risk Engine]
+        end
+    end
+
+    RH_UI --> RH_Logic
+    OP_UI --> OP_Logic
+    
+    RH_Logic --> DB
+    OP_Logic --> DB
+    
+    RH_Logic -.-> CPF_Key
+    OP_Logic -.-> CPF_Key
+    
+    CPF_Key --> Risk_Engine
+    Risk_Engine --> OP_Logic
+    
+    Auth --> RH_UI
+    Auth --> OP_UI

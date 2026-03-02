@@ -1,0 +1,45 @@
+node_modules/
+.pnpm-store/
+tmp/
+
+# Build outputs
+dist/
+build/
+server-dist/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local scratch files created during shell checks
+\$*
+\#
+[}]
+if
+node
+pnpm
+rmdir
+Remove-Item
+Start-Sleep
+Write-Host
+Banco
+Servidor
+ml-gestao-total@1.0.0
+tsx
+
+# Local SQLite data
+server/database/*.db

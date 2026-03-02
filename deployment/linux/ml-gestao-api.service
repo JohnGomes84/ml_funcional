@@ -1,0 +1,17 @@
+[Unit]
+Description=ML Gestao Total API
+After=network.target
+
+[Service]
+Type=simple
+User=mlgestao
+WorkingDirectory=/opt/ml-gestao-total
+Environment=NODE_ENV=production
+Environment=PORT=3001
+EnvironmentFile=/opt/ml-gestao-total/.env.local
+ExecStart=/usr/bin/pnpm start
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
