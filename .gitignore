@@ -6,6 +6,10 @@ tmp/
 dist/
 build/
 server-dist/
+coverage/
+*.tsbuildinfo
+.cache/
+.eslintcache
 
 # Environment files
 .env
