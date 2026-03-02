@@ -8,11 +8,37 @@ export default function Register() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const navigate = useNavigate();
 
+  const resolveRegisterError = (err: unknown) => {
+    if (axios.isAxiosError(err)) {
+      const payload = err.response?.data;
+      if (payload && typeof payload === "object" && "error" in payload && typeof payload.error === "string") {
+        return payload.error;
+      }
+
+      if (typeof payload === "string" && payload.trim().length > 0) {
+        return "Erro inesperado do servidor ao registrar. Tente novamente.";
+      }
+
+      if (err.code === "ERR_NETWORK") {
+        return `Não foi possível conectar ao servidor (${API_BASE_URL}). Verifique se o backend está rodando.`;
+      }
+
+      if (err.message) {
+        return err.message;
+      }
+    }
+
+    return "Erro ao registrar";
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setIsSubmitting(true);
     try {
       if (!isAllowedEmail(email)) {
         setError(`Use um email do domínio ${ALLOWED_EMAIL_DOMAIN}`);
@@ -25,8 +51,10 @@ export default function Register() {
         acceptTerms,
       });
       navigate("/login");
-    } catch (err: any) {
-      setError(err.response?.data?.error || "Erro ao registrar");
+    } catch (err: unknown) {
+      setError(resolveRegisterError(err));
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -87,8 +115,12 @@ export default function Register() {
             .
           </label>
         </div>
-        <button type="submit" className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
-          Registrar
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          {isSubmitting ? "Registrando..." : "Registrar"}
         </button>
         <p className="mt-4 text-center">
           Já tem conta?{" "}

@@ -1,6 +1,6 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { API_BASE_URL } from "../lib/api";
 
 type AuditLog = {
@@ -54,86 +54,76 @@ export default function Audit() {
   }, [navigate, page, token]);
 
   if (loading) {
-    return <div className="p-6">Carregando...</div>;
+    return <div className="p-2">Carregando...</div>;
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-100 p-8">
-        <div className="max-w-4xl mx-auto bg-white rounded shadow p-6">
-          <h1 className="text-2xl font-bold mb-4">Auditoria</h1>
-          <p className="text-red-600">{error}</p>
-          <a href="/admin" className="text-blue-600 mt-4 inline-block">
-            Voltar
-          </a>
-        </div>
-      </div>
+      <section className="space-y-3">
+        <h1 className="text-2xl font-bold">Auditoria</h1>
+        <p className="text-red-600">{error}</p>
+        <Link to="/admin" className="text-blue-600">
+          Voltar
+        </Link>
+      </section>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="max-w-6xl mx-auto bg-white rounded shadow p-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">Auditoria de Acesso</h1>
-          <a href="/admin" className="text-blue-600">
-            Voltar
-          </a>
-        </div>
+    <section className="space-y-4">
+      <h1 className="text-2xl font-bold">Auditoria de Acesso</h1>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm border">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="text-left p-3 border">Data</th>
-                <th className="text-left p-3 border">Email</th>
-                <th className="text-left p-3 border">AÃ§Ã£o</th>
-                <th className="text-left p-3 border">Sucesso</th>
-                <th className="text-left p-3 border">IP</th>
-                <th className="text-left p-3 border">User-Agent</th>
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm border">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="text-left p-3 border">Data</th>
+              <th className="text-left p-3 border">Email</th>
+              <th className="text-left p-3 border">Acao</th>
+              <th className="text-left p-3 border">Sucesso</th>
+              <th className="text-left p-3 border">IP</th>
+              <th className="text-left p-3 border">User-Agent</th>
+            </tr>
+          </thead>
+          <tbody>
+            {logs.map((log) => (
+              <tr key={log.id} className="border-t">
+                <td className="p-3 border">{new Date(log.created_at).toLocaleString()}</td>
+                <td className="p-3 border">{log.email || "-"}</td>
+                <td className="p-3 border">{log.action}</td>
+                <td className="p-3 border">{log.success ? "Sim" : "Nao"}</td>
+                <td className="p-3 border">{log.ip || "-"}</td>
+                <td className="p-3 border">{log.user_agent || "-"}</td>
               </tr>
-            </thead>
-            <tbody>
-              {logs.map((log) => (
-                <tr key={log.id} className="border-t">
-                  <td className="p-3 border">{new Date(log.created_at).toLocaleString()}</td>
-                  <td className="p-3 border">{log.email || "-"}</td>
-                  <td className="p-3 border">{log.action}</td>
-                  <td className="p-3 border">{log.success ? "Sim" : "NÃ£o"}</td>
-                  <td className="p-3 border">{log.ip || "-"}</td>
-                  <td className="p-3 border">{log.user_agent || "-"}</td>
-                </tr>
-              ))}
-              {logs.length === 0 && (
-                <tr>
-                  <td className="p-3 border text-center" colSpan={6}>
-                    Sem registros.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="flex items-center justify-between mt-4">
-          <button
-            className="px-3 py-2 rounded border"
-            disabled={page === 0}
-            onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
-          >
-            Anterior
-          </button>
-          <span className="text-sm text-gray-600">PÃ¡gina {page + 1}</span>
-          <button
-            className="px-3 py-2 rounded border"
-            disabled={logs.length < 50}
-            onClick={() => setPage((prev) => prev + 1)}
-          >
-            PrÃ³xima
-          </button>
-        </div>
+            ))}
+            {logs.length === 0 && (
+              <tr>
+                <td className="p-3 border text-center" colSpan={6}>
+                  Sem registros.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
-    </div>
+
+      <div className="flex items-center justify-between">
+        <button
+          className="px-3 py-2 rounded border"
+          disabled={page === 0}
+          onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
+        >
+          Anterior
+        </button>
+        <span className="text-sm text-gray-600">Pagina {page + 1}</span>
+        <button
+          className="px-3 py-2 rounded border"
+          disabled={logs.length < 50}
+          onClick={() => setPage((prev) => prev + 1)}
+        >
+          Proxima
+        </button>
+      </div>
+    </section>
   );
 }
-

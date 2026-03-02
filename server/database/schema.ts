@@ -29,6 +29,38 @@ export function initializeDatabase() {
     )
   `);
 
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS employees (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      full_name TEXT NOT NULL,
+      cpf TEXT UNIQUE NOT NULL,
+      employment_type TEXT NOT NULL DEFAULT 'CLT',
+      status TEXT NOT NULL DEFAULT 'active',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS workers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      full_name TEXT NOT NULL,
+      cpf TEXT UNIQUE NOT NULL,
+      status TEXT NOT NULL DEFAULT 'available',
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `);
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS allocations (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      worker_id INTEGER NOT NULL,
+      client_name TEXT NOT NULL,
+      work_date TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (worker_id) REFERENCES workers(id) ON DELETE CASCADE
+    )
+  `);
+
   const columns = db.prepare("PRAGMA table_info(users)").all() as Array<{ name: string }>;
   const hasRole = columns.some((column) => column.name === "role");
   if (!hasRole) {

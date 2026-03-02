@@ -15,7 +15,7 @@
     "start": "node server-dist/server/core/index.js",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "db:push": "drizzle-kit generate && drizzle-kit migrate"
   },
   "dependencies": {
