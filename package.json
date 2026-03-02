@@ -15,7 +15,9 @@
     "start": "node server-dist/server/core/index.js",
     "check": "tsc --noEmit",
     "format": "prettier --write .",
-    "test": "vitest run --passWithNoTests",
+    "test": "pnpm run test:client && pnpm run test:server",
+    "test:client": "vitest run --passWithNoTests",
+    "test:server": "vitest run --config vitest.server.config.ts",
     "db:push": "drizzle-kit generate && drizzle-kit migrate"
   },
   "dependencies": {

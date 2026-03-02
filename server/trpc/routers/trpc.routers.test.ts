@@ -1,0 +1,87 @@
+import { TRPCError } from "@trpc/server";
+import { describe, expect, it } from "vitest";
+import { operacionalRouter } from "./operacional";
+import { rhRouter } from "./rh";
+
+const adminContext = {
+  req: {} as never,
+  res: {} as never,
+  user: { id: 1, role: "admin" as const },
+};
+
+const userContext = {
+  req: {} as never,
+  res: {} as never,
+  user: { id: 2, role: "user" as const },
+};
+
+const anonymousContext = {
+  req: {} as never,
+  res: {} as never,
+  user: null,
+};
+
+describe("rh router", () => {
+  it("returns public health", async () => {
+    const caller = rhRouter.createCaller(anonymousContext);
+    const result = await caller.health();
+
+    expect(result.module).toBe("rh");
+    expect(result.status).toBe("ok");
+  });
+
+  it("blocks protected calls without auth", async () => {
+    const caller = rhRouter.createCaller(anonymousContext);
+
+    await expect(caller.employees()).rejects.toBeInstanceOf(TRPCError);
+  });
+
+  it("creates and lists employees as admin", async () => {
+    const caller = rhRouter.createCaller(adminContext);
+
+    const created = await caller.createEmployee({
+      fullName: "Ana Silva",
+      cpf: "12345678901",
+      employmentType: "CLT",
+      status: "active",
+    });
+
+    expect(created).toMatchObject({
+      full_name: "Ana Silva",
+      cpf: "12345678901",
+      employment_type: "CLT",
+      status: "active",
+    });
+
+    const listed = await caller.employees({ search: "Ana", limit: 10, offset: 0 });
+    expect(listed.total).toBe(1);
+    expect(Array.isArray(listed.items)).toBe(true);
+  });
+});
+
+describe("operacional router", () => {
+  it("allows protected call for regular authenticated user", async () => {
+    const caller = operacionalRouter.createCaller(userContext);
+    const result = await caller.security();
+
+    expect(result).toHaveProperty("lockedUsers");
+    expect(result).toHaveProperty("usersWithFailedAttempts");
+  });
+
+  it("prevents deleting worker with allocations", async () => {
+    const caller = operacionalRouter.createCaller(adminContext);
+    const worker = (await caller.createWorker({
+      fullName: "Carlos Souza",
+      cpf: "98765432100",
+      status: "available",
+    })) as { id: number };
+
+    await caller.createAllocation({
+      workerId: worker.id,
+      clientName: "Cliente XPTO",
+      workDate: "2026-03-02",
+    });
+
+    await expect(caller.deleteWorker({ id: worker.id })).rejects.toBeInstanceOf(TRPCError);
+  });
+});

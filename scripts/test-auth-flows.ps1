@@ -17,6 +17,7 @@ function Request-Api {
     Method = $Method
     Uri = $Url
     Headers = $Headers
+    UseBasicParsing = $true
   }
 
   if ($null -ne $Body) {

@@ -14,7 +14,7 @@ Este diretório contém os arquivos operacionais para publicar e implantar o ML 
 
 ## Fluxo recomendado
 
-1. Ajustar variáveis com base em `.env.production.example`.
+1. Ajustar variáveis com base em `.env.production.example` (incluindo `CORS_ORIGIN` com o domínio público).
 2. Rodar `deploy-prod.sh`.
 3. Instalar `ml-gestao-api.service` e iniciar serviço.
 4. Instalar config do Nginx e recarregar.
