@@ -18,6 +18,13 @@
     "test": "pnpm run test:client && pnpm run test:server",
     "test:client": "vitest run --passWithNoTests",
     "test:server": "vitest run --config vitest.server.config.ts",
+    "test:auth": "vitest run --config vitest.server.config.ts server/routes/auth.http.test.ts server/routes/auth.flows.test.ts",
+    "validate": "pnpm run check && pnpm run check:server && pnpm run build:server && pnpm run build && pnpm run test",
+    "validate:full": "pnpm run validate && pnpm run smoke:local",
+    "smoke": "bash deployment/linux/smoke-test.sh",
+    "smoke:local": "bash scripts/smoke-local.sh",
+    "ops:check": "bash deployment/linux/ops-check.sh",
+    "backup:sqlite": "bash deployment/linux/backup-sqlite.sh",
     "db:push": "drizzle-kit generate && drizzle-kit migrate"
   },
   "dependencies": {
@@ -94,7 +101,6 @@
     "tsx": "^4.19.1",
     "typescript": "5.9.3",
     "vite": "^7.1.7",
-    "vite-plugin-manus-runtime": "^0.0.57",
     "vitest": "^2.1.4"
   },
   "packageManager": "pnpm@10.4.1+sha512.c753b6c3ad7afa13af388fa6d808035a008e30ea9993f58c6663e2bc5ff21679aa834db094987129aa4d488b86df57f7b634981b2f827cdcacc698cc0cfb88af",
@@ -662,7 +668,6 @@
       "victory-vendor",
       "vite",
       "vite-node",
-      "vite-plugin-manus-runtime",
       "vitest",
       "why-is-node-running",
       "wouter",

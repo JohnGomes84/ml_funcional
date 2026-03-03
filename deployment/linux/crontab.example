@@ -1,0 +1,5 @@
+# Backup diario as 02:30 (local + opcional offsite, conforme env)
+30 2 * * * APP_DIR=/opt/ml-gestao-total /opt/ml-gestao-total/deployment/linux/backup-sqlite.sh >> /var/log/ml-gestao-backup.log 2>&1
+
+# Verificacao operacional a cada 10 minutos
+*/10 * * * * APP_DIR=/opt/ml-gestao-total BASE_URL=http://127.0.0.1:3001 /opt/ml-gestao-total/deployment/linux/ops-check.sh >> /var/log/ml-gestao-ops-check.log 2>&1

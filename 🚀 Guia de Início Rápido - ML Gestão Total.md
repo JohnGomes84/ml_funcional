@@ -1,4 +1,4 @@
-﻿# Guia de Inicio Rapido - ML Gestao Total
+# Guia de Inicio Rapido - ML Gestao Total
 
 Tempo estimado: 5-10 minutos
 
@@ -41,6 +41,10 @@ Campos importantes:
 - `JWT_SECRET`: use uma chave forte.
 - `ALLOWED_EMAIL_DOMAIN`: dominio permitido para cadastro/login.
 - `DB_PATH`: caminho do arquivo SQLite.
+- `CORS_ORIGIN`: origem do frontend em desenvolvimento (`http://localhost:3000`).
+
+Observacao:
+- O backend carrega `.env` e sobrescreve com `.env.local` automaticamente.
 
 ## 4) Iniciar desenvolvimento
 
@@ -49,7 +53,7 @@ pnpm dev
 ```
 
 Servicos esperados:
-- Frontend: http://localhost:5173
+- Frontend: http://localhost:3000
 - API health: http://localhost:3001/api/health
 
 ## 5) Primeiro acesso
@@ -84,6 +88,13 @@ pnpm dev
 pnpm check
 pnpm build
 pnpm test
+pnpm run test:auth
+pnpm run smoke
+pnpm run smoke:local
+pnpm run ops:check
+pnpm run backup:sqlite
+pnpm run validate
+pnpm run validate:full
 ```
 
 ## 7) Troubleshooting
@@ -104,6 +115,13 @@ pnpm dev
 
 ### Erro de dominio no login/cadastro
 Ajuste `ALLOWED_EMAIL_DOMAIN` no `.env.local`.
+
+### `pnpm run smoke` falhou
+Esse comando apenas valida API ativa. Para subir API + validar em um comando:
+
+```bash
+pnpm run smoke:local
+```
 
 ## Proximos passos
 

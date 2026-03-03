@@ -88,7 +88,7 @@ Este comando:
 pnpm dev
 ```
 
-A aplicação estará disponível em `http://localhost:5173`
+A aplicação estará disponível em `http://localhost:3000`
 
 ## 📊 Funcionalidades Principais
 
@@ -169,14 +169,14 @@ trpc.integration.getDashboardMetrics.query()
 
 ## 📈 Deployment
 
-### Opção 1: Manus (Recomendado)
+### Opção 1: Deploy Local (Recomendado)
 
 ```bash
 # Fazer checkpoint
 pnpm build
 
-# Publicar via UI Manus
-# Clique no botão "Publish" na interface
+# Gerar build de produção
+# Publicar com a estratégia da sua infraestrutura
 ```
 
 ### Opção 2: Railway
@@ -285,4 +285,4 @@ Contribuições são bem-vindas! Por favor:
 
 ---
 
-**Desenvolvido com ❤️ por Manus AI**
+**Desenvolvido pela equipe ML Gestão Total**

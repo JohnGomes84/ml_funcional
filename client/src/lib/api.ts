@@ -1,5 +1,14 @@
-export const API_BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) || "http://localhost:3001";
+function normalizeBaseUrl(value: string): string {
+  return value.trim().replace(/\/+$/, "");
+}
+
+const configuredApiBaseUrl = (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim();
+
+export const API_BASE_URL = configuredApiBaseUrl
+  ? normalizeBaseUrl(configuredApiBaseUrl)
+  : import.meta.env.DEV
+    ? "http://localhost:3001"
+    : "";
 
 export const ALLOWED_EMAIL_DOMAIN =
   (import.meta.env.VITE_ALLOWED_EMAIL_DOMAIN as string | undefined) || "mlservicoseco.com.br";

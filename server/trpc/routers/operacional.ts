@@ -4,16 +4,35 @@ import db from "../../database/connection";
 import { auditService } from "../../db";
 import { adminProcedure, createTrpcRouter, protectedProcedure, publicProcedure } from "../trpc";
 
+const normalizeCpf = (value: string) => value.replace(/\D/g, "");
+
+const cpfField = z
+  .string()
+  .trim()
+  .transform(normalizeCpf)
+  .refine((value) => /^\d{11}$/.test(value), "CPF deve conter 11 digitos");
+
+const isValidIsoDate = (value: string) => {
+  const parsed = new Date(`${value}T00:00:00.000Z`);
+  return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+};
+
+const isoDateField = z
+  .string()
+  .trim()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Data deve estar no formato YYYY-MM-DD")
+  .refine(isValidIsoDate, "Data invalida");
+
 const workerInputSchema = z.object({
   fullName: z.string().trim().min(3).max(120),
-  cpf: z.string().trim().min(11).max(14),
+  cpf: cpfField,
   status: z.enum(["available", "unavailable"]).default("available"),
 });
 
 const workerUpdateInputSchema = z.object({
   id: z.number().int().positive(),
   fullName: z.string().trim().min(3).max(120).optional(),
-  cpf: z.string().trim().min(11).max(14).optional(),
+  cpf: cpfField.optional(),
   status: z.enum(["available", "unavailable"]).optional(),
 });
 
@@ -29,14 +48,14 @@ const workersListInputSchema = z
 const allocationInputSchema = z.object({
   workerId: z.number().int().positive(),
   clientName: z.string().trim().min(2).max(120),
-  workDate: z.string().trim().min(10).max(10),
+  workDate: isoDateField,
 });
 
 const allocationUpdateInputSchema = z.object({
   id: z.number().int().positive(),
   workerId: z.number().int().positive().optional(),
   clientName: z.string().trim().min(2).max(120).optional(),
-  workDate: z.string().trim().min(10).max(10).optional(),
+  workDate: isoDateField.optional(),
 });
 
 const allocationsListInputSchema = z
@@ -80,8 +99,9 @@ export const operacionalRouter = createTrpcRouter({
     const params: Array<string | number> = [];
 
     if (search) {
+      const normalizedCpfSearch = normalizeCpf(search);
       clauses.push("(full_name LIKE ? OR cpf LIKE ?)");
-      params.push(`%${search}%`, `%${search}%`);
+      params.push(`%${search}%`, `%${normalizedCpfSearch || search}%`);
     }
     if (status) {
       clauses.push("status = ?");

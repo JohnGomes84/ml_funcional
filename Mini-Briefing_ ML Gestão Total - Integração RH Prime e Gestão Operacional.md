@@ -1,6 +1,6 @@
 # Mini-Briefing: ML Gestão Total - Integração RH Prime e Gestão Operacional
 
-**Autor:** Manus AI
+**Autor:** Equipe ML Gestão Total
 **Data:** 20 de fevereiro de 2026
 
 ## 1. Introdução

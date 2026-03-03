@@ -57,6 +57,36 @@ describe("rh router", () => {
     expect(listed.total).toBe(1);
     expect(Array.isArray(listed.items)).toBe(true);
   });
+
+  it("restricts users list to admin", async () => {
+    const caller = rhRouter.createCaller(userContext);
+    await expect(caller.users()).rejects.toBeInstanceOf(TRPCError);
+  });
+
+  it("normalizes cpf and blocks duplicates with punctuation variations", async () => {
+    const caller = rhRouter.createCaller(adminContext);
+
+    await caller.createEmployee({
+      fullName: "Joana Braga",
+      cpf: "123.456.789-01",
+      employmentType: "PJ",
+      status: "active",
+    });
+
+    await expect(
+      caller.createEmployee({
+        fullName: "Joana Braga 2",
+        cpf: "12345678901",
+        employmentType: "PJ",
+        status: "active",
+      }),
+    ).rejects.toBeInstanceOf(TRPCError);
+
+    const listed = await caller.employees({ search: "123.456.789-01", limit: 10, offset: 0 });
+    const firstEmployee = listed.items[0] as { cpf?: string } | undefined;
+    expect(listed.total).toBe(1);
+    expect(firstEmployee?.cpf).toBe("12345678901");
+  });
 });
 
 describe("operacional router", () => {
@@ -83,5 +113,22 @@ describe("operacional router", () => {
     });
 
     await expect(caller.deleteWorker({ id: worker.id })).rejects.toBeInstanceOf(TRPCError);
+  });
+
+  it("rejects invalid allocation dates", async () => {
+    const caller = operacionalRouter.createCaller(adminContext);
+    const worker = (await caller.createWorker({
+      fullName: "Larissa Teixeira",
+      cpf: "987.654.321-00",
+      status: "available",
+    })) as { id: number };
+
+    await expect(
+      caller.createAllocation({
+        workerId: worker.id,
+        clientName: "Cliente Zeta",
+        workDate: "2026-02-31",
+      }),
+    ).rejects.toBeInstanceOf(TRPCError);
   });
 });

@@ -1,6 +1,6 @@
 # Entrega Final: Estrutura Modular ML Gestão Total
 
-**Autor:** Manus AI
+**Autor:** Equipe ML Gestão Total
 **Data:** 20 de fevereiro de 2026
 
 ## 1. Visão Geral do Projeto
@@ -24,7 +24,7 @@ ml-gestao-total/
 ### Diagrama de Arquitetura
 O diagrama abaixo ilustra como os módulos se conectam através da camada de interconexão:
 
-![Arquitetura ML Gestão Total](https://private-us-east-1.manuscdn.com/sessionFile/HwvcMp2c3UyXy2jtpApSvE/sandbox/MmFhLDWf0VAyWRaCM5Ldcb-images_1772048688019_na1fn_L2hvbWUvdWJ1bnR1L2FycXVpdGV0dXJhX21sX2dlc3Rhb190b3RhbA.png?Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvSHd2Y01wMmMzVXlYeTJqdHBBcFN2RS9zYW5kYm94L01tRmhMRFdmMFZBeVdSYUNNNUxkY2ItaW1hZ2VzXzE3NzIwNDg2ODgwMTlfbmExZm5fTDJodmJXVXZkV0oxYm5SMUwyRnljWFZwZEdWMGRYSmhYMjFzWDJkbGMzUmhiMTkwYjNSaGJBLnBuZyIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=pNa~tJUyurIm~-NKtRFuQ7-20uYiOv5gWHdA33SrCmMRrAmQpifl-tncVwQpRU4bZU7bqO8EEkXpPPTqwS9Y9FMTasScLCTIeDEMk88eT4yYNZi-mjKGx29lqATlBjswpZ8cKTjXuC6k9vmKGo~1XMC-p5fedttlR82eSHHAzanm4wWRZ9XoiXe6W~acVdlxStjbq3tKTMRJNnlCO-mWdhSk0JBky5rEhebz5ZOkPv~iI6rsK81XoFatJx-ZF2p8M9DJ8d60jPAoZIU9mypa3nUd179244ubSPvL1A1yzELs2M3yIX5HfFpCh9wpUagJgJ-JXkGbRYISB74J2xUNog__)
+![Arquitetura ML Gestão Total](./arquitetura_ml_gestao_total.png)
 
 ## 3. Protótipo de Interconexão (Validação)
 Foi desenvolvido um protótipo funcional em `server/prototype_test.ts` que valida a consulta cruzada via CPF. Os resultados demonstraram a eficácia na identificação de:

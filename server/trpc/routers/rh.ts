@@ -4,9 +4,17 @@ import db from "../../database/connection";
 import { userService } from "../../db";
 import { adminProcedure, createTrpcRouter, protectedProcedure, publicProcedure } from "../trpc";
 
+const normalizeCpf = (value: string) => value.replace(/\D/g, "");
+
+const cpfField = z
+  .string()
+  .trim()
+  .transform(normalizeCpf)
+  .refine((value) => /^\d{11}$/.test(value), "CPF deve conter 11 digitos");
+
 const employeeInputSchema = z.object({
   fullName: z.string().trim().min(3).max(120),
-  cpf: z.string().trim().min(11).max(14),
+  cpf: cpfField,
   employmentType: z.enum(["CLT", "PJ"]).default("CLT"),
   status: z.enum(["active", "inactive"]).default("active"),
 });
@@ -23,7 +31,7 @@ const employeesListInputSchema = z
 const employeeUpdateInputSchema = z.object({
   id: z.number().int().positive(),
   fullName: z.string().trim().min(3).max(120).optional(),
-  cpf: z.string().trim().min(11).max(14).optional(),
+  cpf: cpfField.optional(),
   employmentType: z.enum(["CLT", "PJ"]).optional(),
   status: z.enum(["active", "inactive"]).optional(),
 });
@@ -35,7 +43,7 @@ export const rhRouter = createTrpcRouter({
     timestamp: new Date().toISOString(),
   })),
 
-  users: protectedProcedure.query(() => userService.listUsers()),
+  users: adminProcedure.query(() => userService.listUsers()),
 
   metrics: protectedProcedure.query(() => {
     const totalUsers = userService.countUsers();
@@ -64,8 +72,9 @@ export const rhRouter = createTrpcRouter({
     const params: Array<string | number> = [];
 
     if (search) {
+      const normalizedCpfSearch = normalizeCpf(search);
       clauses.push("(full_name LIKE ? OR cpf LIKE ?)");
-      params.push(`%${search}%`, `%${search}%`);
+      params.push(`%${search}%`, `%${normalizedCpfSearch || search}%`);
     }
     if (status) {
       clauses.push("status = ?");
